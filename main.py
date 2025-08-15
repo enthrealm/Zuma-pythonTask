@@ -3,6 +3,7 @@ from Path import Path
 from Constants import *
 from ui import *
 from Balls import *
+from Frog import Frog
 
 
 class Level:
@@ -10,6 +11,7 @@ class Level:
         self.number = number
         self.path = Path(number)
         self.ball_generator = BallGenerator(self.path, number * 50)
+        self.frog = Frog(self.ball_generator)
 
 
 class Game:
@@ -67,6 +69,7 @@ class Game:
 
     def update_sprites(self):
         self.level.ball_generator.update()
+        self.level.frog.update()
 
     def update_display(self, display):
         self.ui_manager.draw_window(display)
