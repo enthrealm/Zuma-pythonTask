@@ -1,5 +1,4 @@
 import pygame
-import math
 import random
 from Constants import *
 from ui import BONUS_IMAGES

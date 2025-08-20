@@ -53,6 +53,9 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_quit = True
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        self.level.frog.shoot()
 
             self.update_sprites()
             self.update_display(self.ui_manager.game_display)
