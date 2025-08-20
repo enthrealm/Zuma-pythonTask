@@ -59,7 +59,7 @@ class UiManager:
         self.start_game_btn = Button('Начать игру', SCREEN_CENTER)
         self.start_game_display = Display(buttons=[self.start_game_btn])
 
-        self.level_label = Label('Уровень {}'.format(level.number), (WIDTH // 2, 40))
+        self.level_label = Label('Уровень {}'.format(level.number), (WIDTH - 50, 40))
         sprites = [level.path, level.ball_generator, level.frog]
         self.game_display = Display(sprites=[sprite for sprite in sprites], labels=[self.level_label])
 

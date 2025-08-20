@@ -91,7 +91,7 @@ class BonusManager:
 
     def generate_bonus(self):
         current_time = datetime.datetime.now()
-        if (current_time - self.game_start_time).seconds == 15:
+        if (current_time - self.game_start_time).seconds == 10:
             ball_with_bonus = random.choice(self.ball_generator.balls)
             bonus = random.choice(self.bonuses)
             ball_with_bonus.set_bonus(bonus)
@@ -100,7 +100,7 @@ class BonusManager:
 
     def update_balls_with_bonuses(self):
         for ball, time in self.balls_with_bonuses:
-            if (datetime.datetime.now() - time).seconds == 15:
+            if (datetime.datetime.now() - time).seconds == 10:
                 ball.set_bonus(None)
 
     def update(self):
