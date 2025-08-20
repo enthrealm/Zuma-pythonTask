@@ -1,5 +1,11 @@
 from Constants import *
 import pygame
+from BonusManager import Bonus
+
+BONUS_IMAGES = {Bonus.Pause: 'images/pause.png',
+                Bonus.Reverse: 'images/reverse.png',
+                Bonus.Bomb: 'images/bomb.png',
+                Bonus.Speed: 'images/speed.png'}
 
 
 class Button:

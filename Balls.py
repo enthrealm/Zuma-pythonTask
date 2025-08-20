@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from Constants import *
+from ui import BONUS_IMAGES
 
 
 class Ball(pygame.sprite.Sprite):
@@ -18,6 +19,9 @@ class Ball(pygame.sprite.Sprite):
 
         self.can_move = True
         self.bonus = None
+
+    def set_bonus(self, bonus):
+        self.bonus = bonus
 
     def set_position(self, position):
         self.pos_in_path = position
@@ -36,6 +40,8 @@ class Ball(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
+        if self.bonus is not None:
+            screen.blit(pygame.image.load(BONUS_IMAGES[self.bonus]), (self.rect.x, self.rect.y))
 
     def __eq__(self, other):
         return {
@@ -53,6 +59,9 @@ class BallGenerator:
         self.balls = []
         self.images = ["images\Blueball.png", "images\Yellowball.png", "images\Grayball.png",
                        "images\Greenball.png", "images\Purpleball.png", "images\Redball.png"]
+
+        self.reverse = False
+        self.pause = False
 
     def generate(self):
         if self.number_of_generated < self.number_to_generate:
@@ -85,7 +94,8 @@ class BallGenerator:
 
     def update(self):
         self.update_chain()
-        self.update_balls()
+        if not self.reverse and not self.pause:
+            self.update_balls()
 
     def draw(self, screen):
         for ball in self.balls:
