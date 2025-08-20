@@ -1,20 +1,25 @@
 from Balls import *
+from BonusManager import Bonus
 
 
 class ShootingBall:
-    def __init__(self, surface, start_pos, direction, color, ball_generator):
+    def __init__(self, surface, start_pos, direction, color, ball_generator, bonus_manager):
         self.surface = surface
         self.pos = list(start_pos)
         self.direction = direction
         self.speed = 17
+        self.speed_bonus = False
         self.active = True
         self.color = color
         self.ball_generator = ball_generator
-
+        self.bonus_manager = bonus_manager
 
     def update(self):
         if not self.active:
             return
+        self.speed_bonus = self.bonus_manager.handle_speed_bonus()
+        if self.speed_bonus:
+            self.speed = 25
         collision_result = self.check_collision(self.ball_generator.balls)
         if collision_result is not None:
             hit_ball, index = collision_result
@@ -46,7 +51,21 @@ class ShootingBall:
             right += 1
 
         if right - left + 1 >= 3:
-            del balls[left:right + 1]
+            is_bomb = False
+            for ball in balls[left:right + 1]:
+                if ball.bonus is not None:
+                    if ball.bonus is Bonus.Bomb:
+                        is_bomb = True
+                    elif ball.bonus is Bonus.Speed:
+                        self.speed_bonus = True
+                        self.bonus_manager.start_bonus(ball.bonus)
+                    else:
+                        self.bonus_manager.start_bonus(ball.bonus)
+
+            if is_bomb:
+                del balls[max(left - 3, 0): min(right + 4, len(self.ball_generator.balls))]
+            else:
+                del balls[left:right + 1]
 
     def is_out_of_bounds(self):
         return (self.pos[0] < -50 or self.pos[0] > WIDTH + 50 or

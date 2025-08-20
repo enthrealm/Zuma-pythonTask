@@ -4,10 +4,12 @@ import random
 import math
 import pygame
 
+
 class Frog(pygame.sprite.Sprite):
-    def __init__(self, ball_generator):
+    def __init__(self, ball_generator, bonus_manager):
         pygame.sprite.Sprite.__init__(self)
         self.ball_generator = ball_generator
+        self.bonus_manager = bonus_manager
         self.colors = ball_generator.images
         self.curr_ball_color = self.colors[random.randint(0, 5)]
         self.next_ball_color = self.colors[random.randint(0, 5)]
@@ -26,7 +28,6 @@ class Frog(pygame.sprite.Sprite):
         self.curr_ball_pos, self.next_ball_pos = None, None
 
         self.shooting_ball = None
-
 
     def update(self):
         if self.curr_ball_color is None:
@@ -74,8 +75,8 @@ class Frog(pygame.sprite.Sprite):
         direction = (0, 0)
         if distance > 0:
             direction = (vector_x / distance, vector_y / distance)
-        self.shooting_ball = ShootingBall(self.surface_curr,[start_x, start_y], direction,
-                                          self.curr_ball_color, self.ball_generator)
+        self.shooting_ball = ShootingBall(self.surface_curr, [start_x, start_y], direction,
+                                          self.curr_ball_color, self.ball_generator, self.bonus_manager)
 
         self.curr_ball_color = None
         self.surface_curr = None

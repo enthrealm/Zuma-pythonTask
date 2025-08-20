@@ -13,7 +13,7 @@ class Level:
         self.path = Path(number)
         self.ball_generator = BallGenerator(self.path, number * 50)
         self.bonus_manager = BonusManager(self.ball_generator)
-        self.frog = Frog(self.ball_generator)
+        self.frog = Frog(self.ball_generator, self.bonus_manager)
 
 
 class Game:
