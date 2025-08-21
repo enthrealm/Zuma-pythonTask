@@ -3,7 +3,7 @@ from BonusManager import Bonus
 
 
 class ShootingBall:
-    def __init__(self, surface, start_pos, direction, color, ball_generator, bonus_manager):
+    def __init__(self, surface, start_pos, direction, color, ball_generator, bonus_manager, score_manager):
         self.surface = surface
         self.pos = list(start_pos)
         self.direction = direction
@@ -13,6 +13,7 @@ class ShootingBall:
         self.color = color
         self.ball_generator = ball_generator
         self.bonus_manager = bonus_manager
+        self.score_manager = score_manager
 
     def update(self):
         if not self.active:
@@ -63,8 +64,10 @@ class ShootingBall:
                         self.bonus_manager.start_bonus(ball.bonus)
 
             if is_bomb:
+                self.score_manager.add_score(10 * (min(right + 4, len(self.ball_generator.balls)) - max(left - 3, 0)))
                 del balls[max(left - 3, 0): min(right + 4, len(self.ball_generator.balls))]
             else:
+                self.score_manager.add_score(10 * (right - left + 1))
                 del balls[left:right + 1]
 
     def is_out_of_bounds(self):

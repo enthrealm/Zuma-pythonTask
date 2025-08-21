@@ -51,8 +51,9 @@ class Ball(pygame.sprite.Sprite):
 
 
 class BallGenerator:
-    def __init__(self, path, number):
+    def __init__(self, path, number, score_manager):
         self.path = path
+        self.score_manager = score_manager
         self.number_to_generate = number
         self.number_of_generated = 0
         self.balls = []
@@ -95,6 +96,8 @@ class BallGenerator:
         self.update_chain()
         if not self.reverse and not self.pause:
             self.update_balls()
+        if len(self.balls) == 0 and self.number_of_generated == self.number_to_generate:
+            self.score_manager.win()
 
     def draw(self, screen):
         for ball in self.balls:

@@ -60,7 +60,7 @@ class UiManager:
         self.start_game_display = Display(buttons=[self.start_game_btn])
 
         self.level_label = Label('Уровень {}'.format(level.number), (WIDTH - 50, 40))
-        sprites = [level.path, level.ball_generator, level.frog]
+        sprites = [level.path, level.ball_generator, level.frog, level.star]
         self.game_display = Display(sprites=[sprite for sprite in sprites], labels=[self.level_label])
 
         self.continue_btn = Button('Продолжить', SCREEN_CENTER)
@@ -93,6 +93,16 @@ class UiManager:
             self.put_label(label)
         for sprite in window.spites:
             sprite.draw(self.screen)
+
+    def show_score(self, score):
+        points_label = Label('Счет: {}'.format(score), (WIDTH // 4, 40))
+        self.put_label(points_label)
+
+    def show_lives(self, lives):
+        self.put_label(Label(str(lives), (3 * WIDTH // 4 + 30, 40)))
+        self.screen.blit(pygame.transform.smoothscale(
+            pygame.image.load('images/life.png'), (20, 20)),
+            (3 * WIDTH // 4, 30))
 
     def put_label(self, label, color=GREY):
         pygame.draw.rect(self.screen, color, (label.x_start - label.width / 2,
