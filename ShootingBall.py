@@ -26,6 +26,9 @@ class ShootingBall:
             hit_ball, index = collision_result
             self.ball_generator.insert(index, self)
             self.check_for_matches(index + 1)
+            start_index = self.check_for_matches(index + 1)
+            if start_index != -1:
+                self.auto_break(start_index)
             self.deactivate()
             return
 
@@ -35,23 +38,22 @@ class ShootingBall:
         if self.is_out_of_bounds():
             self.deactivate()
 
-    def check_for_matches(self, inserted_index):
+    def check_for_matches(self, index):
         balls = self.ball_generator.balls
 
-        if not (0 <= inserted_index < len(balls)):
-            return
-
-        target_color = balls[inserted_index].image_path
-
-        left = inserted_index
+        if not (0 <= index < len(balls)):
+            return -1
+        target_color = balls[index].image_path
+        left = index
         while left > 0 and balls[left - 1].image_path == target_color:
             left -= 1
 
-        right = inserted_index
+        right = index
         while right < len(balls) - 1 and balls[right + 1].image_path == target_color:
             right += 1
 
-        if right - left + 1 >= 3:
+        chain_length = right - left + 1
+        if chain_length >= 3:
             is_bomb = False
             for ball in balls[left:right + 1]:
                 if ball.bonus is not None:
@@ -64,11 +66,25 @@ class ShootingBall:
                         self.bonus_manager.start_bonus(ball.bonus)
 
             if is_bomb:
-                self.score_manager.add_score(10 * (min(right + 4, len(self.ball_generator.balls)) - max(left - 3, 0)))
-                del balls[max(left - 3, 0): min(right + 4, len(self.ball_generator.balls))]
+                self.score_manager.add_score(10 * (min(right + 4, len(balls)) - max(left - 3, 0)))
+                bomb_left = max(left - 3, 0)
+                bomb_right = min(right + 4, len(balls))
+                del balls[bomb_left:bomb_right]
+                return bomb_left
             else:
-                self.score_manager.add_score(10 * (right - left + 1))
+                self.score_manager.add_score(10 * chain_length)
                 del balls[left:right + 1]
+                return left
+
+        return -1
+
+    def auto_break(self, start_index):
+        current_index = start_index
+        while 0 <= current_index < len(self.ball_generator.balls):
+            next_index = self.check_for_matches(current_index)
+            if next_index == -1:
+                break
+            current_index = next_index
 
     def is_out_of_bounds(self):
         return (self.pos[0] < -50 or self.pos[0] > WIDTH + 50 or

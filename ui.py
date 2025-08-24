@@ -104,6 +104,17 @@ class UiManager:
             pygame.image.load('images/life.png'), (20, 20)),
             (3 * WIDTH // 4, 30))
 
+    def show_time_left(self, time_left):
+        seconds_left = time_left // 1000
+        minutes = seconds_left // 60
+        seconds = seconds_left % 60
+        time_text = f"Время: {int(minutes):02d}:{int(seconds):02d}"
+        time_label = Label(time_text, (WIDTH - 60, 60))
+
+        if seconds_left < 60:
+            time_label.text = time_label.font.render(time_text, True, (255, 0, 0))
+        self.put_label(time_label, GREY)
+
     def put_label(self, label, color=GREY):
         pygame.draw.rect(self.screen, color, (label.x_start - label.width / 2,
                                               label.y_start, label.width,

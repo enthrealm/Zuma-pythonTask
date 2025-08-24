@@ -33,6 +33,10 @@ class Game:
         self.ui_manager = UiManager(self.screen, self.level)
         self.is_quit = False
 
+        self.level_time = 3 * 60 * 1000 # 3 минуты в миллисек
+        self.start_time = None
+        self.left_time = self.level_time
+
     def play(self):
         self.continue_game(self.ui_manager.start_game_btn,
                            self.ui_manager.start_game_display)
@@ -45,6 +49,8 @@ class Game:
     def setup_new_game(self):
         self.level = Level(self.level_num, self.score_manager)
         self.ui_manager = UiManager(self.screen, self.level)
+        self.start_time = pygame.time.get_ticks()
+        self.left_time = self.level_time
 
     def play_game(self):
         game_finished = False
@@ -53,6 +59,10 @@ class Game:
             self.level.ball_generator.generate()
 
             self.clock.tick(FPS)
+
+            current_time = pygame.time.get_ticks()
+            elapsed_time = current_time - self.start_time
+            self.left_time = max(0, self.level_time - elapsed_time)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -68,6 +78,9 @@ class Game:
                 game_finished = True
                 self.handle_win()
             elif self.score_manager.is_lose:
+                game_finished = True
+                self.handle_lose()
+            elif self.left_time <= 0:
                 game_finished = True
                 self.handle_lose()
 
@@ -128,6 +141,7 @@ class Game:
         if display is self.ui_manager.game_display:
             self.ui_manager.show_score(self.score_manager.score)
             self.ui_manager.show_lives(self.score_manager.lives)
+            self.ui_manager.show_time_left(self.left_time)
         pygame.display.update()
 
 
